@@ -46,7 +46,7 @@ class Deposit < ApplicationRecord
   scope :unpaid, -> { where(paid: false) }
   scope :pending_payout, -> { confirmed.unpaid.order(confirmed_at: :asc) }
   
-  # Instance methods
+# Instance methods
   def confirm_deposit!(bitcoin_amount:, txid:)
     return if confirmed?
     
@@ -64,10 +64,7 @@ class Deposit < ApplicationRecord
         amount: capped_amount,
         confirmed: true,
         confirmed_at: Time.current,
- def round_is_active
-    unless round.state_active?
-      errors.add(:round, 'is not currently active')
-    end        deposit_txid: txid
+        deposit_txid: txid
       )
       
       round.update!(
@@ -96,7 +93,7 @@ class Deposit < ApplicationRecord
   end
   
   private
-  
+    
   def generate_deposit_address
     self.deposit_address = BitcoinRpc.new_address
   end

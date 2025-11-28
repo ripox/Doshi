@@ -1,6 +1,3 @@
-# ============================================================================
-# FILE: app/services/bitcoin_rpc.rb
-# ============================================================================
 class BitcoinRpc
   class Error < StandardError; end
   class RetriableError < Error; end
@@ -56,13 +53,12 @@ class BitcoinRpc
     
     def handle_response(response)
       if response.success?
-        body = JSON.parse(response.body)
+        body = response.body
         
         if body['error']
           error_msg = body['error']['message']
           Rails.logger.error "Bitcoin RPC error: #{error_msg}"
           
-          # Retry on certain errors
           if error_msg.match?(/insufficient funds/i)
             raise InsufficientFundsError, error_msg
           elsif error_msg.match?(/loading|warming up/i)

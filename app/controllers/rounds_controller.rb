@@ -1,6 +1,3 @@
-# ============================================================================
-# FILE: app/controllers/rounds_controller.rb
-# ============================================================================
 class RoundsController < ApplicationController
   before_action :set_round, only: [:show]
   
@@ -27,28 +24,33 @@ class RoundsController < ApplicationController
     @round = Round.new
   end
   
-# POST /rounds
+  # POST /rounds
   def create
     @round = Round.new(round_params)
     
     if @round.save
       # Create first deposit for the round creator
-      # Important: Don't validate round state for the first deposit
       @deposit = @round.deposits.new(
         payout_address: @round.first_payout_address,
         ip: request.remote_ip,
         user_agent: request.user_agent
       )
       
-      # Skip the round_is_active validation for first deposit
-      @deposit.save(validate: false)
+      # Skip round state validation for the initial deposit
+      @deposit.skip_round_validation = true
       
-      redirect_to landing_round_deposit_path(@round, @deposit), 
-                  notice: 'Round was successfully created.'
+      if @deposit.save
+        redirect_to landing_round_deposit_path(@round, @deposit), 
+                    notice: 'Round was successfully created.'
+      else
+        @round.destroy
+        render :new, status: :unprocessable_entity
+      end
     else
       render :new, status: :unprocessable_entity
     end
-  end  
+  end
+  
   private
   
   def set_round
@@ -67,11 +69,18 @@ class RoundsController < ApplicationController
       :first_payout_address
     ).tap do |whitelisted|
       # Convert BTC to satoshis
-      whitelisted[:minimum_deposit] = (whitelisted[:minimum_deposit].to_f * Bitcoin::SATOSHI_TO_BTC).to_i
-      whitelisted[:maximum_deposit] = (whitelisted[:maximum_deposit].to_f * Bitcoin::SATOSHI_TO_BTC).to_i
+      if whitelisted[:minimum_deposit].present?
+        whitelisted[:minimum_deposit] = (whitelisted[:minimum_deposit].to_f * Bitcoin::SATOSHI_TO_BTC).to_i
+      end
+      
+      if whitelisted[:maximum_deposit].present?
+        whitelisted[:maximum_deposit] = (whitelisted[:maximum_deposit].to_f * Bitcoin::SATOSHI_TO_BTC).to_i
+      end
       
       # Convert hours to seconds
-      whitelisted[:expiration] = (whitelisted[:expiration].to_f * 3600).to_i
+      if whitelisted[:expiration].present?
+        whitelisted[:expiration] = (whitelisted[:expiration].to_f * 3600).to_i
+      end
     end
   end
 end
