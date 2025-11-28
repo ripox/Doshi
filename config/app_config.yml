@@ -1,0 +1,30 @@
+# ============================================================================
+# FILE: config/app_config.yml
+# ============================================================================
+default: &default
+  alerter_url: "http://localhost/api/alerter/subscribe"
+  bitcoin_fee: 50000
+  bitcoin_password: "9jj3kfl3FEFVD3fFdKJ0q2Czds2"
+  bitcoin_url: "https://localhost:8332/"
+  bitcoin_user: "bitcoinduit"
+  deposit_report_ip: "localhost"
+  deposit_report_url: "http://localhost/deposits/report"
+  house_initial_fee: 5
+  house_deposit_fee: 2
+  house_pot_fee: 50
+  round_sweep_time: 30
+
+development:
+  <<: *default
+
+test:
+  <<: *default
+
+production:
+  <<: *default
+  bitcoin_password: <%= ENV['BITCOIN_PASSWORD'] %>
+  bitcoin_user: <%= ENV['BITCOIN_USER'] %>
+  bitcoin_url: <%= ENV['BITCOIN_URL'] %>
+  alerter_url: <%= ENV['ALERTER_URL'] %>
+  deposit_report_ip: <%= ENV['DEPOSIT_REPORT_IP'] %>
+

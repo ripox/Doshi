@@ -1,0 +1,87 @@
+# ============================================================================
+# FILE: app/views/rounds/index.html.erb
+# ============================================================================
+<div class="container mx-auto px-4 py-8">
+  <h1 class="text-3xl font-bold mb-8">Bitcoin Rounds</h1>
+  
+  <!-- Create Round Section -->
+  <div class="mb-8 border rounded-lg">
+    <button class="w-full text-left px-6 py-4 font-semibold bg-gray-100 hover:bg-gray-200" 
+            data-controller="toggle" 
+            data-action="click->toggle#toggle"
+            data-toggle-target="button">
+      Create Round
+    </button>
+    
+    <div class="hidden px-6 py-4" data-toggle-target="content">
+      <%= render 'form', round: @round %>
+    </div>
+  </div>
+  
+  <!-- Rounds Table -->
+  <div class="overflow-x-auto bg-white shadow-md rounded-lg">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ROI (%)</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jackpot (%)</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Min/Max</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Exp. (hrs)</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Remain (hrs)</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Deposits</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jackpot</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Decay (%)</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Deposit</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200">
+        <% @rounds.each do |round| %>
+          <tr class="hover:bg-gray-50">
+            <td class="px-6 py-4 whitespace-nowrap">
+              <%= link_to round.name, round, class: "text-blue-600 hover:text-blue-800 font-medium" %>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap"><%= round.roi %></td>
+            <td class="px-6 py-4 whitespace-nowrap"><%= round.jackpot_percent %></td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <%= number_with_precision(round.btc_minimum_deposit, precision: 2) %> - 
+              <%= number_with_precision(round.btc_maximum_deposit, precision: 2) %>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <%= number_with_precision(round.expiration_hours, precision: 2) %>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <% if round.state_active? %>
+                <%= number_with_precision(round.time_remaining_hours, precision: 2) %>
+              <% elsif round.state_pending? %>
+                <span class="text-yellow-600">Not started</span>
+              <% else %>
+                <span class="text-red-600">Expired</span>
+              <% end %>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <%= round.confirmed_deposits.count %>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <%= number_with_precision(round.btc_total_deposits, precision: 2) %>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <%= number_with_precision(round.btc_jackpot, precision: 2) %>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap"><%= round.decay %></td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              <%= time_ago_in_words(round.last_deposit_time) %> ago
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    
+    <% if @rounds.empty? %>
+      <div class="text-center py-8 text-gray-500">
+        No active rounds. Create one to get started!
+      </div>
+    <% end %>
+  </div>
+</div>

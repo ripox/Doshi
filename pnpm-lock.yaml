@@ -1,0 +1,53 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    dependencies:
+      '@rails/actioncable':
+        specifier: ^6.0.0
+        version: 6.1.710
+      '@rails/activestorage':
+        specifier: ^6.0.0
+        version: 6.1.710
+      '@rails/ujs':
+        specifier: ^6.0.0
+        version: 6.1.710
+      turbolinks:
+        specifier: ^5.2.0
+        version: 5.2.0
+
+packages:
+
+  '@rails/actioncable@6.1.710':
+    resolution: {integrity: sha512-YDzMuh8mDRNLFXiexlLVnF1NUwk1bXwwO1gtEhOCsCqIsL6D21JfxpMwAD5x8qzrMJ1J0RZVa2hLl7ofeg+Mqw==}
+
+  '@rails/activestorage@6.1.710':
+    resolution: {integrity: sha512-hLXxAtn7hSWXkTzMGOmQmjuzJ0FzVw8j/Zi8DGS+DG9x4uPQjl+ZEVdty7pFcsBCjkpejtk0TChcBQlLW8sgOg==}
+
+  '@rails/ujs@6.1.710':
+    resolution: {integrity: sha512-NUS8nUkYHGSn/EDg3oJCkpMweSKeFxA4ef6pcnW2fJEZ7RcoWdJa1rr9vamUoqzNR+Ctd8ezsgBMAjxUahVB1w==}
+
+  spark-md5@3.0.2:
+    resolution: {integrity: sha512-wcFzz9cDfbuqe0FZzfi2or1sgyIrsDwmPwfZC4hiNidPdPINjeUwNfv5kldczoEAcjl9Y1L3SM7Uz2PUEQzxQw==}
+
+  turbolinks@5.2.0:
+    resolution: {integrity: sha512-pMiez3tyBo6uRHFNNZoYMmrES/IaGgMhQQM+VFF36keryjb5ms0XkVpmKHkfW/4Vy96qiGW3K9bz0tF5sK9bBw==}
+
+snapshots:
+
+  '@rails/actioncable@6.1.710': {}
+
+  '@rails/activestorage@6.1.710':
+    dependencies:
+      spark-md5: 3.0.2
+
+  '@rails/ujs@6.1.710': {}
+
+  spark-md5@3.0.2: {}
+
+  turbolinks@5.2.0: {}
