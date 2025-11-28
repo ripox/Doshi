@@ -75,4 +75,9 @@ Rails.application.configure do
 
   # Raise error when a before_action's only/except options reference missing actions.
   config.action_controller.raise_on_missing_callback_actions = true
+# Use mock Bitcoin services in development
+  config.after_initialize do
+    Object.const_set(:BitcoinRpc, BitcoinRpcMock)
+    Object.const_set(:BitcoinAlerter, BitcoinAlerterMock)
+  end
 end

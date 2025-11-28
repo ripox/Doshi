@@ -28,14 +28,16 @@ class Deposit < ApplicationRecord
   before_validation :generate_deposit_address, on: :create
   after_create :subscribe_deposit_address
   
-  # Validations
+# Validations
   validates :deposit_address, presence: true, uniqueness: true
   validates :payout_address, presence: true
   validates :ip, presence: true
   
   validate :addresses_are_valid, on: :create
-  validate :round_is_active, on: :create
+  validate :round_is_active, on: :create, unless: :skip_round_validation
   validate :amount_in_range, if: :amount?
+  
+  attr_accessor :skip_round_validation
   
   # Scopes
   scope :confirmed, -> { where(confirmed: true) }
@@ -62,7 +64,10 @@ class Deposit < ApplicationRecord
         amount: capped_amount,
         confirmed: true,
         confirmed_at: Time.current,
-        deposit_txid: txid
+ def round_is_active
+    unless round.state_active?
+      errors.add(:round, 'is not currently active')
+    end        deposit_txid: txid
       )
       
       round.update!(

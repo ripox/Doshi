@@ -27,25 +27,28 @@ class RoundsController < ApplicationController
     @round = Round.new
   end
   
-  # POST /rounds
+# POST /rounds
   def create
     @round = Round.new(round_params)
     
     if @round.save
       # Create first deposit for the round creator
-      @deposit = @round.deposits.create!(
+      # Important: Don't validate round state for the first deposit
+      @deposit = @round.deposits.new(
         payout_address: @round.first_payout_address,
         ip: request.remote_ip,
         user_agent: request.user_agent
       )
+      
+      # Skip the round_is_active validation for first deposit
+      @deposit.save(validate: false)
       
       redirect_to landing_round_deposit_path(@round, @deposit), 
                   notice: 'Round was successfully created.'
     else
       render :new, status: :unprocessable_entity
     end
-  end
-  
+  end  
   private
   
   def set_round
