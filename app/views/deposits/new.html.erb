@@ -1,0 +1,80 @@
+<div class="max-w-2xl mx-auto p-6">
+  <div class="bg-white rounded-lg shadow-lg p-8">
+    <h1 class="text-3xl font-bold mb-2">Make a Deposit</h1>
+    <h2 class="text-xl text-gray-600 mb-6">Round: <%= @round.name %></h2>
+
+    <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6">
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <svg class="h-5 w-5 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+          </svg>
+        </div>
+        <div class="ml-3">
+          <p class="text-sm text-blue-700">
+            <strong>ROI:</strong> <%= @round.roi %>% | 
+            <strong>Jackpot:</strong> <%= @round.jackpot_percent %>% | 
+            <strong>Min/Max:</strong> <%= @round.btc_minimum_deposit %>-<%= @round.btc_maximum_deposit %> DASH
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <%= form_with(model: [@round, @deposit], local: true, class: "space-y-6") do |form| %>
+      <% if @deposit.errors.any? %>
+        <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-6">
+          <div class="flex">
+            <div class="flex-shrink-0">
+              <svg class="h-5 w-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+              </svg>
+            </div>
+            <div class="ml-3">
+              <h3 class="text-sm font-medium text-red-800">
+                <%= pluralize(@deposit.errors.count, "error") %> prohibited this deposit from being saved:
+              </h3>
+              <ul class="mt-2 text-sm text-red-700 list-disc list-inside">
+                <% @deposit.errors.full_messages.each do |message| %>
+                  <li><%= message %></li>
+                <% end %>
+              </ul>
+            </div>
+          </div>
+        </div>
+      <% end %>
+
+      <div>
+        <%= form.label :payout_address, "Your Dash Payout Address", class: "block text-sm font-medium text-gray-700 mb-2" %>
+        <%= form.text_field :payout_address, 
+            class: "w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent",
+            placeholder: "yPMy77HX8MVRzzAX3sDR2ag2SrENxfutkm",
+            required: true %>
+        <p class="mt-2 text-sm text-gray-500">
+          This is where you'll receive your payout when the round ends or pays out.
+        </p>
+      </div>
+
+      <div class="bg-gray-50 rounded-lg p-4">
+        <h3 class="font-semibold mb-2">How It Works:</h3>
+        <ol class="list-decimal list-inside space-y-1 text-sm text-gray-700">
+          <li>Enter your Dash payout address above</li>
+          <li>We'll generate a unique deposit address for you</li>
+          <li>Send between <%= @round.btc_minimum_deposit %> and <%= @round.btc_maximum_deposit %> DASH to that address</li>
+          <li>Your deposit will be confirmed after 1 block confirmation</li>
+          <li>You'll receive <%= @round.roi %>% ROI when the round pays out</li>
+        </ol>
+      </div>
+
+      <div class="flex gap-4">
+        <%= form.submit "Create Deposit Address", 
+            class: "flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition duration-200 cursor-pointer" %>
+        <%= link_to "Cancel", round_path(@round), 
+            class: "flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-3 px-6 rounded-lg text-center transition duration-200" %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="mt-4 text-center">
+    <%= link_to "← Back to Round", round_path(@round), class: "text-blue-600 hover:text-blue-800" %>
+  </div>
+</div>

@@ -14,9 +14,7 @@ class BitcoinAlerter
           herpaderpderp: 'big_ass_smiggy'
         }
       end
-      
       handle_response(response)
-      
     rescue Faraday::Error => e
       Rails.logger.error "Bitcoin Alerter error: #{e.message}"
       raise Error, "Failed to subscribe address: #{e.message}"
@@ -26,12 +24,10 @@ class BitcoinAlerter
     
     def handle_response(response)
       if response.success?
-        body = JSON.parse(response.body)
-        
+        body = response.body
         unless body['status'] == 'success'
           raise Error, "Alerter subscription failed: #{body.inspect}"
         end
-        
         true
       else
         raise Error, "HTTP #{response.status}: #{response.body}"
@@ -41,12 +37,11 @@ class BitcoinAlerter
     def connection
       @connection ||= Faraday.new(
         url: AppConfig.alerter_url,
-        ssl: { verify: false } # Note: In production, use proper SSL verification
+        ssl: { verify: false }
       ) do |f|
         f.request :url_encoded
         f.response :json
         f.adapter Faraday.default_adapter
-        
         f.options.timeout = 30
         f.options.open_timeout = 10
       end

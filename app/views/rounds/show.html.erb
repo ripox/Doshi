@@ -1,0 +1,63 @@
+<div class="max-w-6xl mx-auto p-6">
+  <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-3xl font-bold text-gray-900"><%= @round.name %></h1>
+      <span class="px-4 py-2 rounded-full text-sm font-semibold
+        <%= @round.state_active? ? 'bg-green-100 text-green-800' : 
+            @round.state_pending? ? 'bg-yellow-100 text-yellow-800' : 
+            'bg-gray-100 text-gray-800' %>">
+        <%= @round.state.titleize %>
+      </span>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      <div class="bg-blue-50 p-4 rounded-lg">
+        <div class="text-sm text-gray-600">ROI</div>
+        <div class="text-2xl font-bold text-blue-600"><%= @round.roi %>%</div>
+      </div>
+      
+      <div class="bg-purple-50 p-4 rounded-lg">
+        <div class="text-sm text-gray-600">Jackpot</div>
+        <div class="text-2xl font-bold text-purple-600"><%= number_to_currency(@round.btc_jackpot, unit: "", precision: 4) %> DASH</div>
+      </div>
+      
+      <div class="bg-green-50 p-4 rounded-lg">
+        <div class="text-sm text-gray-600">Total Pot</div>
+        <div class="text-2xl font-bold text-green-600"><%= number_to_currency(@round.btc_pot, unit: "", precision: 4) %> DASH</div>
+      </div>
+      
+      <div class="bg-orange-50 p-4 rounded-lg">
+        <div class="text-sm text-gray-600">Time Remaining</div>
+        <div class="text-2xl font-bold text-orange-600">
+          <%= @round.time_remaining_hours ? number_with_precision(@round.time_remaining_hours, precision: 2) : 'N/A' %> hrs
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+      <div class="p-4 border rounded-lg">
+        <div class="text-sm text-gray-600">Min/Max Deposit</div>
+        <div class="font-semibold"><%= @round.btc_minimum_deposit %> - <%= @round.btc_maximum_deposit %> DASH</div>
+      </div>
+      
+      <div class="p-4 border rounded-lg">
+        <div class="text-sm text-gray-600">Total Deposits</div>
+        <div class="font-semibold"><%= number_to_currency(@round.btc_total_deposits, unit: "", precision: 4) %> DASH</div>
+      </div>
+      
+      <div class="p-4 border rounded-lg">
+        <div class="text-sm text-gray-600">Decay Rate</div>
+        <div class="font-semibold"><%= @round.decay %>% per deposit</div>
+      </div>
+    </div>
+
+    <% if @round.state_active? %>
+      <div class="mb-6">
+        <%= link_to "Make a Deposit", new_round_deposit_path(@round), 
+            class: "w-full md:w-auto inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg text-center transition duration-200" %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="bg-white rounded-lg shadow-lg p-6">
+    <h2 class="text-2xl font-bold mb-4">Confirmed Deposits

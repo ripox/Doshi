@@ -2,17 +2,14 @@ default: &default
   adapter: postgresql
   encoding: unicode
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  username: deploy
+  password: g2)D?W+!Fba.D!a[
+  host: localhost
 
 development:
   <<: *default
   database: doshi_development
 
-test:
-  <<: *default
-  database: doshi_test
-
 production:
   <<: *default
   database: doshi_production
-  username: doshi
-  password: <%= ENV["DOSHI_DATABASE_PASSWORD"] %>

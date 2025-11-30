@@ -52,7 +52,10 @@ class Round < ApplicationRecord
                     inclusion: { in: 0..50 }
   
   validates :expiration, presence: true,
-                         inclusion: { in: 3600..345600 }
+                         numericality: { 
+                         greater_than_or_equal_to: 1,
+                         less_than_or_equal_to: 345600 
+                       }
   
   validates :minimum_deposit, presence: true,
                               numericality: { 
