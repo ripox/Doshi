@@ -53,7 +53,7 @@ class Round < ApplicationRecord
   
   validates :expiration, presence: true,
                          numericality: { 
-                         greater_than_or_equal_to: 1,
+                         greater_than_or_equal_to: 60,
                          less_than_or_equal_to: 345600 
                        }
   

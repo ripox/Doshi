@@ -13,3 +13,9 @@ development:
 production:
   <<: *default
   database: doshi_production
+
+queue:
+  production:
+    <<: *default
+    database: doshi_production
+    migrations_paths: db/queue_migrate
